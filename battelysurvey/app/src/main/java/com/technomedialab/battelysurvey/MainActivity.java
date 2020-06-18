@@ -45,7 +45,7 @@ public class MainActivity extends SensorActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         vertextview = (TextView)findViewById(R.id.VertextView);
-        vertextview.setText("Ver.0.0.4");
+        vertextview.setText("Ver.0.0.5");
 
         if (intent == null) {
             intent = new Intent(getApplication(), BackgroundService.class);

@@ -35,6 +35,7 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
 
         //チャンネルと文章をセット
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
+                .add("token","xoxb-392540951891-1139721507506-GWCkhnBtJooLgFGpEyjbjFhH")
                 .add("channel","#android_test")
                 .add("text", Build.DEVICE + ":電池が " + params + "% です。" );
         RequestBody requestBody = formBodyBuilder.build();
@@ -42,7 +43,7 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
         Request request = new Request.Builder()
                 .url(url)
                 //トークンはAuthorizationで値にBearerを付けて送信する必要がある
-                .addHeader("Authorization", "Bearer xoxb-392540951891-1139721507506-4REHlK11UUNp3lmtjh15Em0A")
+//                .addHeader("Authorization", "Bearer xoxb-392540951891-1139721507506-GWCkhnBtJooLgFGpEyjbjFhH")
                 .post(requestBody)
                 .build();
 

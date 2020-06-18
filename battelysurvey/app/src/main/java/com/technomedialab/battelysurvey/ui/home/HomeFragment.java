@@ -1,8 +1,10 @@
 package com.technomedialab.battelysurvey.ui.home;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +16,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.technomedialab.battelysurvey.LogOutput;
 import com.technomedialab.battelysurvey.R;
 
-public class HomeFragment extends Fragment {
+import java.io.File;
+import java.util.List;
+
+public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
 
     private HomeViewModel homeViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -40,6 +45,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         // TextViewをひも付けます
         final TextView mTextView = view.findViewById(R.id.text_home);
 
@@ -73,7 +79,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // OK押下時
-                        homeViewModel.LogDelete(getContext());
+                        LogDelete(getContext());
 
                         new AlertDialog.Builder(getActivity())
                                 .setTitle("削除完了")
@@ -95,21 +101,84 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // OK押下時
-                        try {
-                            homeViewModel.logOutput(getContext());
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        logOutput(getContext());
 
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("送信完了")
-                                .setMessage("ログファイルの送信が完了しました")
-                                .setPositiveButton("OK", null)
-                                .show();
+//                        new AlertDialog.Builder(getActivity())
+//                                .setTitle("送信完了")
+//                                .setMessage("ログファイルの送信が完了しました")
+//                                .setPositiveButton("OK", null)
+//                                .show();
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    //ログ削除処理
+    public void LogDelete(Context context){
+        final File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        System.out.println(path.toString());
+
+        File[] files = path.listFiles();
+        if(files == null) {
+            System.out.println("配下にファイルが存在しない");
+        }
+        //for文でファイルリスト分ループする
+        for(int i=0; i<files.length; i++) {
+
+            //ファイルの存在確認
+            if(files[i].exists() == false) {
+                continue;
+                //ファイルの場合は再帰的に自身を呼び出して削除する
+            } else if(files[i].isFile()) {
+                files[i].delete();
+                System.out.println("削除ファイル：" + files[i].toString());
+            }
+        }
 
     }
+
+    //ログ送信処理
+    public void logOutput(Context context) {
+        final String[] resultData = {""};
+
+        LogOutput postTask = new LogOutput();
+        final File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File[] files = path.listFiles();
+        if(files == null) {
+            System.out.println("配下にファイルが存在しない");
+        }else{
+            // コールバック設定
+            postTask.setOnCallBack(this);
+            postTask.execute(files);
+        }
+    }
+
+    @Override
+    public void CallBack(List result) {
+
+        String Title = "";
+        String Message = "";
+        String errStr = "";
+
+        if (result.size() == 0) {
+            Title = "送信完了";
+            Message = "ログファイルの送信が完了しました";
+        } else {
+
+            for (int i = 0; i < result.size(); i++) {
+                errStr = errStr + result.get(i).toString() + "\r\n";
+            }
+
+            Title = "送信失敗";
+            Message = "送信に失敗したログファイルがあります" + "\r\n" + errStr;
+        }
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(Title)
+                .setMessage(Message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
 }

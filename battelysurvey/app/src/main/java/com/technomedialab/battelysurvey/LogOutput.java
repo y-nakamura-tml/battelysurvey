@@ -1,10 +1,14 @@
 package com.technomedialab.battelysurvey;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Build;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -14,17 +18,18 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LogOutput extends AsyncTask<File,String,String> {
+public class LogOutput extends AsyncTask<File,String,List> {
 
     private OkHttpClient client;
-//    private CallBackTask callbacktask;
+    private CallBackTask callbacktask;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     //String json = "{\"channel\":\"%23android_test\",\"text\":\"bot test\"}";
 
     @Override
-    protected String doInBackground(File... filePath) {
+    protected List doInBackground(File... filePath) {
 
+        List<String> errFileList = new ArrayList<>();
         //引数の値を格納
         if(client == null) {
             client = new OkHttpClient.Builder()
@@ -35,6 +40,7 @@ public class LogOutput extends AsyncTask<File,String,String> {
         }
         File files[] = filePath;
 
+        String filesCount = String.valueOf(files.length);
         System.out.println(files.length);
 
         //URLをセット
@@ -45,8 +51,8 @@ public class LogOutput extends AsyncTask<File,String,String> {
             //チャンネルと文章をセット
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", files[i].getName(), RequestBody.create(MediaType.parse("text"), files[0]))
-                    .addFormDataPart("token", "xoxb-392540951891-1139721507506-4REHlK11UUNp3lmtjh15Em0A")
+                    .addFormDataPart("file", files[i].getName(), RequestBody.create(MediaType.parse("text"), files[i]))
+                    .addFormDataPart("token", "xoxb-392540951891-1139721507506-GWCkhnBtJooLgFGpEyjbjFhH")
                     .addFormDataPart("channels", "#android_test")
                     .addFormDataPart("filename", files[i].getName())
                     .addFormDataPart("filetype", "text")
@@ -64,30 +70,31 @@ public class LogOutput extends AsyncTask<File,String,String> {
             try {
                 Response response = client.newCall(request).execute();
                 System.out.println("成功");
-                System.out.println(response.body().string());
             } catch (IOException e) {
+                errFileList.add(files[i].getName());
                 System.out.println("失敗");
                 e.printStackTrace();
             }
         }
-        return "null";
+        return errFileList;
 
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(List result) {
         super.onPostExecute(result);
-//        callbacktask.CallBack(result);
+        String errFileName = "";
+
+
+        callbacktask.CallBack(result);
     }
-//    public void setOnCallBack(CallBackTask _cbj) {
-//        callbacktask = _cbj;
-//    }
-//
-//    /**
-//     * コールバック用のstaticなclass
-//     */
-//    public static class CallBackTask {
-//        public void CallBack(String result) {
-//        }
-//    }
+    public void setOnCallBack(CallBackTask _cbj) {
+        callbacktask = _cbj;
+    }
+
+
+    public interface CallBackTask
+    {
+        void CallBack(List result);
+    }
 }
