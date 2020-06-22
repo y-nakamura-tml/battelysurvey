@@ -45,7 +45,7 @@ public class MainActivity extends SensorActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         vertextview = (TextView)findViewById(R.id.VertextView);
-        vertextview.setText("Ver.0.0.5");
+        vertextview.setText("Ver.0.0.6(照度あり)");
 
         if (intent == null) {
             intent = new Intent(getApplication(), BackgroundService.class);

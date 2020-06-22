@@ -24,7 +24,6 @@ public class LogOutput extends AsyncTask<File,String,List> {
     private CallBackTask callbacktask;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    //String json = "{\"channel\":\"%23android_test\",\"text\":\"bot test\"}";
 
     @Override
     protected List doInBackground(File... filePath) {
@@ -41,7 +40,6 @@ public class LogOutput extends AsyncTask<File,String,List> {
         File files[] = filePath;
 
         String filesCount = String.valueOf(files.length);
-        System.out.println(files.length);
 
         //URLをセット
         String url = "https://slack.com/api/files.upload";
@@ -56,13 +54,11 @@ public class LogOutput extends AsyncTask<File,String,List> {
                     .addFormDataPart("channels", "#android_test")
                     .addFormDataPart("filename", files[i].getName())
                     .addFormDataPart("filetype", "text")
-                    .addFormDataPart("title", Build.DEVICE + "_" + files[i].getName())
+                    .addFormDataPart("title",  files[i].getName())
                     .build();
 
             Request request = new Request.Builder()
                     .url(url)
-                    //トークンはAuthorizationで値にBearerを付けて送信する必要がある
-                    //                .addHeader("Authorization", "Bearer xoxb-392540951891-1139721507506-DI7SVtxNn6E4Ip5vPO6CfJy6")
                     .post(requestBody)
                     .build();
             System.out.println(files[i].getName());
@@ -83,9 +79,6 @@ public class LogOutput extends AsyncTask<File,String,List> {
     @Override
     protected void onPostExecute(List result) {
         super.onPostExecute(result);
-        String errFileName = "";
-
-
         callbacktask.CallBack(result);
     }
     public void setOnCallBack(CallBackTask _cbj) {

@@ -22,22 +22,20 @@
         android:id="@+id/l_delete"
         android:layout_width="160dp"
         android:layout_height="40dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="35dp"
         android:text="@string/l_delete"
-        app:layout_constraintBottom_toTopOf="@+id/l_logOutput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_home" />
+        app:layout_constraintTop_toBottomOf="@+id/l_logOutput" />
 
     <Button
         android:id="@+id/l_logOutput"
         android:layout_width="160dp"
         android:layout_height="40dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="100dp"
         android:text="@string/l_logOutput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/l_delete" />
+        app:layout_constraintTop_toBottomOf="@+id/text_home" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

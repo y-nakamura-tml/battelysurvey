@@ -12,7 +12,7 @@ import java.util.Date;
 import android.content.Context;
 import android.util.Log;
 
-class LogSave{
+public class LogSave{
 
     private File file;
 
