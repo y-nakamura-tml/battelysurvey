@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +28,7 @@ public class LogSave{
 
         final File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
 
-        final String testfile = dateFormat.format(date) + "log.txt";
+        final String testfile = dateFormat.format(date) + "log.csv";
 
         if (file == null) {
             file = new File(path, testfile);
@@ -36,7 +37,7 @@ public class LogSave{
         try {
             String str = logStr.toString();
             FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, Charset.forName("SJIS"));
             BufferedWriter bw = new BufferedWriter(outputStreamWriter);
             bw.write(str);
             //ファイルに書き込む

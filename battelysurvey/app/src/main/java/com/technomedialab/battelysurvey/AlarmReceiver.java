@@ -63,8 +63,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         float[] sensorValues = mainApp.getSensorValues();
         if (sensorValues != null){
-            Log.d(LogUtility.TAG(this), "照度：" + String.valueOf(sensorValues[0]));
-            logStr.append(GetTimestamp.getNowDate() + "照度：" + String.valueOf(sensorValues[0]) + "\n");
+            Log.d(LogUtility.TAG(this), "照度" + Const.CSV_BREAK + sensorValues[0]);
+            logStr.append(GetTimestamp.getNowDate() + "照度" + Const.CSV_BREAK + sensorValues[0] + "\n");
 
         }
 
@@ -166,26 +166,26 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (runtime != null) {
             // トータルメモリ
-            Log.d(LogUtility.TAG(this), "全メモリ[KB]: " + (int) (runtime.totalMemory() / 1024));
-            logStr.append(GetTimestamp.getNowDate() + "全メモリ[KB]: " + (int) (runtime.totalMemory() / 1024) + "\n");
+            Log.d(LogUtility.TAG(this), "全メモリ[KB]" + Const.CSV_BREAK + (int) (runtime.totalMemory() / 1024));
+            logStr.append(GetTimestamp.getNowDate() + "全メモリ[KB]" + Const.CSV_BREAK + (int) (runtime.totalMemory() / 1024) + "\n");
 
             // 空きメモリ
-            Log.d(LogUtility.TAG(this), "空きメモリ[KB]: " + (int) (runtime.freeMemory() / 1024));
-            logStr.append(GetTimestamp.getNowDate() + "空きメモリ[KB]: " + (int) (runtime.freeMemory() / 1024) + "\n");
+            Log.d(LogUtility.TAG(this), "空きメモリ[KB]" + Const.CSV_BREAK + (int) (runtime.freeMemory() / 1024));
+            logStr.append(GetTimestamp.getNowDate() + "空きメモリ[KB]" + Const.CSV_BREAK + (int) (runtime.freeMemory() / 1024) + "\n");
 
             // 使用メモリ
-            Log.d(LogUtility.TAG(this), "使用メモリ[KB]: " + (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024));
-            logStr.append(GetTimestamp.getNowDate() + "使用メモリ[KB]: " + (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024) + "\n");
+            Log.d(LogUtility.TAG(this), "使用メモリ[KB]" + Const.CSV_BREAK + (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024));
+            logStr.append(GetTimestamp.getNowDate() + "使用メモリ[KB]" + Const.CSV_BREAK + (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024) + "\n");
 
             // 使用メモリ
-            Log.d(LogUtility.TAG(this), "Dalvikで使用できる最大メモリ[KB]: " + (int) (runtime.maxMemory() / 1024));
-            logStr.append(GetTimestamp.getNowDate() + "Dalvikで使用できる最大メモリ[KB]: " + (int) (runtime.maxMemory() / 1024) + "\n");
+            Log.d(LogUtility.TAG(this), "Dalvikで使用できる最大メモリ[KB]" + Const.CSV_BREAK + (int) (runtime.maxMemory() / 1024));
+            logStr.append(GetTimestamp.getNowDate() + "Dalvikで使用できる最大メモリ[KB]" + Const.CSV_BREAK + (int) (runtime.maxMemory() / 1024) + "\n");
         }
 
         //輝度取得　0-255
         String brightness = Settings.System.getString(context.getContentResolver(), "screen_brightness");
-        Log.d(LogUtility.TAG(this), "輝度: " + brightness);
-        logStr.append(GetTimestamp.getNowDate() + "輝度: " + brightness + "\n");
+        Log.d(LogUtility.TAG(this), "輝度" + Const.CSV_BREAK + brightness);
+        logStr.append(GetTimestamp.getNowDate() + "輝度" + Const.CSV_BREAK + brightness + "\n");
 
 
         //電波状態確認
@@ -194,42 +194,40 @@ public class AlarmReceiver extends BroadcastReceiver {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
         if (activeNetwork != null) {
-            Log.d(LogUtility.TAG(this), "ネットワーク接続: 可");
-            logStr.append(GetTimestamp.getNowDate() + "ネットワーク接続: 可" + "\n");
+            Log.d(LogUtility.TAG(this), "ネットワーク接続" + Const.CSV_BREAK + "可");
+            logStr.append(GetTimestamp.getNowDate() + "ネットワーク接続" + Const.CSV_BREAK + "可" + "\n");
         } else {
-            Log.d(LogUtility.TAG(this), "ネットワーク接続: 不可 ");
-            logStr.append(GetTimestamp.getNowDate() + "ネットワーク接続: 不可 " + "\n");
+            Log.d(LogUtility.TAG(this), "ネットワーク接続" + Const.CSV_BREAK + "不可 ");
+            logStr.append(GetTimestamp.getNowDate() + "ネットワーク接続" + Const.CSV_BREAK + "不可 " + "\n");
         }
 
         NetworkInfo info = cm.getActiveNetworkInfo();
+        String NetworkStatus = "";
 
         if (info != null) {
             switch (info.getType()) {
                 case ConnectivityManager.TYPE_WIFI:         // Wifi
-                    Log.d(LogUtility.TAG(this), "Wi-Fiに接続中");
-                    logStr.append(GetTimestamp.getNowDate() + "Wi-Fiに接続中" + "\n");
+                    NetworkStatus = "Wi-Fiに接続中";
                     break;
                 case ConnectivityManager.TYPE_MOBILE:
                     switch (info.getSubtype()) {
                         case TelephonyManager.NETWORK_TYPE_LTE:
-                            Log.d(LogUtility.TAG(this), "LTEに接続中");        // LTE
-                            logStr.append(GetTimestamp.getNowDate() + "LTEに接続中" + "\n");
+                            NetworkStatus = "LTEに接続中";
                             break;
                         default:
-                            Log.d(LogUtility.TAG(this), "3Gに接続中");         //
-                            logStr.append(GetTimestamp.getNowDate() + "3Gに接続中" + "\n");
+                            NetworkStatus = "3Gに接続中";
                             break;
                     }
                     break;
                 default:
-                    Log.d(LogUtility.TAG(this), "接続状態不明");
-                    logStr.append(GetTimestamp.getNowDate() + "接続状態不明" + "\n");
+                    NetworkStatus = "接続状態不明";
             }
         } else {
-            Log.d(LogUtility.TAG(this), "機内モードかも");
-            logStr.append(GetTimestamp.getNowDate() + "機内モードかも" + "\n");
-
+            NetworkStatus = "機内モードかも";
         }
+
+        Log.d(LogUtility.TAG(this), "ネットワーク接続先" + Const.CSV_BREAK + NetworkStatus);
+        logStr.append(GetTimestamp.getNowDate() + "ネットワーク接続先" + Const.CSV_BREAK + NetworkStatus + "\n");
 
 
         WifiInfo wInfo = wManager.getConnectionInfo();
@@ -237,7 +235,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         int rssi = wInfo.getRssi();
         int level = WifiManager.calculateSignalLevel(rssi, 5);
         Log.d(LogUtility.TAG(this), String.format("WiFi RSSI : %d / Level : %d/4", rssi, level));
-        logStr.append(GetTimestamp.getNowDate() + String.format("WiFi RSSI : %d / Level : %d/4", rssi, level) + "\n");
+        logStr.append(GetTimestamp.getNowDate() + String.format("WiFi RSSI" + Const.CSV_BREAK +  "%d ", rssi) + "\n");
+        logStr.append(GetTimestamp.getNowDate() + String.format("WiFi Level" + Const.CSV_BREAK + "'" + "%d/4",  level) + "\n");
 
 
         //ログ保存
@@ -273,27 +272,27 @@ public class AlarmReceiver extends BroadcastReceiver {
                 String[] parts = signalStrength.toString().split(" ");
 
                 int CdmaDbm = signalStrength.getCdmaDbm();
-                String mGsmSignalStrength = "mGsmSignalStrength:" + parts[1];
-                String mGsmBitErrorRate = "mGsmBitErrorRate:" + parts[2];
-                String cdmaDbm = "CdmaDbm:" + parts[3];
-                String cdmaEcio = "CdmaEcio:" + parts[4];
-                String evdoDbm = "EvdoDbm:" + parts[5];
-                String evdoEcio = "EvdoEcio:" + parts[6];
-                String evdoSnr = "EvdoSnr:" + parts[7];
-                String lteSignalStrength = "LteSignalStrength:" + parts[8];
-                String lteRsrp = "LteRsrp:" + parts[9];
-                String lteRsrq = "LteRsrq:" + parts[10];
-                String lteRssnr = "LteRssnr:" + parts[11];
-                String lteCqi = "LteCqi:" + parts[12];
-                String LteRsrpBoost = "LteRsrpBoost:" + parts[13];
-                String mTdScdmaRscp = "mTdScdmaRscp:" + parts[14];
-                String WcdmaSignalStrength = "WcdmaSignalStrength:" + parts[15];
-                String WcdmaRscpAsu = "WcdmaRscpAsu:" + parts[16];
-                String WcdmaRscp = "WcdmaRscp:" + parts[17];
+                String mGsmSignalStrength = "mGsmSignalStrength" + Const.CSV_BREAK + parts[1];
+                String mGsmBitErrorRate = "mGsmBitErrorRate" + Const.CSV_BREAK + parts[2];
+                String cdmaDbm = "CdmaDbm" + Const.CSV_BREAK + parts[3];
+                String cdmaEcio = "CdmaEcio" + Const.CSV_BREAK + parts[4];
+                String evdoDbm = "EvdoDbm" + Const.CSV_BREAK + parts[5];
+                String evdoEcio = "EvdoEcio" + Const.CSV_BREAK + parts[6];
+                String evdoSnr = "EvdoSnr" + Const.CSV_BREAK + parts[7];
+                String lteSignalStrength = "LteSignalStrength" + Const.CSV_BREAK + parts[8];
+                String lteRsrp = "LteRsrp" + Const.CSV_BREAK + parts[9];
+                String lteRsrq = "LteRsrq" + Const.CSV_BREAK + parts[10];
+                String lteRssnr = "LteRssnr" + Const.CSV_BREAK + parts[11];
+                String lteCqi = "LteCqi" + Const.CSV_BREAK + parts[12];
+                String LteRsrpBoost = "LteRsrpBoost" + Const.CSV_BREAK + parts[13];
+                String mTdScdmaRscp = "mTdScdmaRscp" + Const.CSV_BREAK + parts[14];
+                String WcdmaSignalStrength = "WcdmaSignalStrength" + Const.CSV_BREAK + parts[15];
+                String WcdmaRscpAsu = "WcdmaRscpAsu" + Const.CSV_BREAK + parts[16];
+                String WcdmaRscp = "WcdmaRscp" + Const.CSV_BREAK + parts[17];
 
 
-                Log.d(LogUtility.TAG(this), "3Gの電波強度" + CdmaDbm);
-                logStr.append(GetTimestamp.getNowDate() + "3Gの電波強度" + CdmaDbm + "\n");
+                Log.d(LogUtility.TAG(this), "3Gの電波強度" + Const.CSV_BREAK + CdmaDbm);
+                logStr.append(GetTimestamp.getNowDate() + "3Gの電波強度" + Const.CSV_BREAK + CdmaDbm + "\n");
 
 //                Log.d(LogUtility.TAG(this), mGsmSignalStrength);
 //                logStr.append(GetTimestamp.getNowDate() + mGsmSignalStrength + "\n");
@@ -332,8 +331,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 //                Log.d(LogUtility.TAG(this), WcdmaRscp);
 //                logStr.append(GetTimestamp.getNowDate() + WcdmaRscp + "\n");
 
-                Log.d(LogUtility.TAG(this), "OS9: " + signalStrength.toString());
-                logStr.append(GetTimestamp.getNowDate() + "OS9: " + signalStrength.toString() + "\n");
+                Log.d(LogUtility.TAG(this), "OS9" + Const.CSV_BREAK + signalStrength.toString());
+                logStr.append(GetTimestamp.getNowDate() + "OS9" + Const.CSV_BREAK + signalStrength.toString() + "\n");
 
 
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
@@ -342,37 +341,37 @@ public class AlarmReceiver extends BroadcastReceiver {
                 String[] mWcdmaData = strSignalStrength[2].split(" ");
                 String[] mLteData = strSignalStrength[4].split(" ");
 
-                Log.d(LogUtility.TAG(this),  "mWcdma:" + mWcdmaData[1].toString());
-                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[1].toString() + "\n");
-//                Log.d(LogUtility.TAG(this),  "mWcdma:" + mWcdmaData[2].toString());
-//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[2].toString() + "\n");
-//                Log.d(LogUtility.TAG(this), "mWcdma:" + mWcdmaData[3].toString());
-//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[3].toString() + "\n");
-//                Log.d(LogUtility.TAG(this), "mWcdma:" + mWcdmaData[4].toString());
-//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[4].toString() + "\n");
-//                Log.d(LogUtility.TAG(this), "mWcdma:" + mWcdmaData[5].toString());
-//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[5].toString() + "\n");
+                Log.d(LogUtility.TAG(this),  "mWcdma:" + mWcdmaData[1].replace("=", Const.CSV_BREAK));
+                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[1].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this),  "mWcdma:" + mWcdmaData[2].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[2].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this), "mWcdma:" + mWcdmaData[3].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[3].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this), "mWcdma:" + mWcdmaData[4].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[4].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this), "mWcdma:" + mWcdmaData[5].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() + "mWcdma:" + mWcdmaData[5].replace("=",Const.CSV_BREAK) + "\n");
 
-                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[1].toString());
-                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[1].toString() + "\n");
-                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[2].toString());
-                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[2].toString() + "\n");
-//                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[3].toString());
-//                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[3].toString() + "\n");
-//                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[4].toString());
-//                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[4].toString() + "\n");
-//                Log.d(LogUtility.TAG(this),   "mLte:" + mLteData[5].toString());
-//                logStr.append(GetTimestamp.getNowDate() +  "mLte:" + mLteData[5].toString() + "\n");
-//                Log.d(LogUtility.TAG(this),   "mLte:" + mLteData[6].toString());
-//                logStr.append(GetTimestamp.getNowDate() +  "mLte:" + mLteData[6].toString() + "\n");
-                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[7].toString());
-                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[7].toString() + "\n");
+                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[1].replace("=",Const.CSV_BREAK));
+                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[1].replace("=",Const.CSV_BREAK) + "\n");
+                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[2].replace("=",Const.CSV_BREAK));
+                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[2].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[3].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[3].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[4].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[4].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this),   "mLte:" + mLteData[5].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() +  "mLte:" + mLteData[5].replace("=",Const.CSV_BREAK) + "\n");
+//                Log.d(LogUtility.TAG(this),   "mLte:" + mLteData[6].replace("=",Const.CSV_BREAK));
+//                logStr.append(GetTimestamp.getNowDate() +  "mLte:" + mLteData[6].replace("=",Const.CSV_BREAK) + "\n");
+                Log.d(LogUtility.TAG(this), "mLte:" + mLteData[7].replace("=",Const.CSV_BREAK));
+                logStr.append(GetTimestamp.getNowDate() + "mLte:" + mLteData[7].replace("=",Const.CSV_BREAK) + "\n");
 
-                Log.d(LogUtility.TAG(this), "signalStrength" + signalStrength.toString());
-                logStr.append(GetTimestamp.getNowDate() + "signalStrength" + signalStrength.toString() + "\n");
+                Log.d(LogUtility.TAG(this), "OS10" + Const.CSV_BREAK + signalStrength.toString());
+                logStr.append(GetTimestamp.getNowDate() + "OS10" + Const.CSV_BREAK + signalStrength.toString() + "\n");
 
-                signalInfoList = signalStrength.getCellSignalStrengths();
-                for (CellSignalStrength signalInfo : signalInfoList) {
+//                signalInfoList = signalStrength.getCellSignalStrengths();
+//                for (CellSignalStrength signalInfo : signalInfoList) {
                     //Log.d(LogUtility.TAG(this), "signalInfo:" + signalInfo.toString());
                     //logStr.append(GetTimestamp.getNowDate() + "signalInfo:" + signalInfo.toString() + "\n");
 //                    String ssignal = signalInfo.toString();
@@ -385,7 +384,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 //                    logStr.append(GetTimestamp.getNowDate() + "受信電力（RSRP）(-109...-53,2147483647):" + parts[2] + "\n");
 //                    Log.d(LogUtility.TAG(this), "受信品質（RSRP）(-109...-53,2147483647):" + parts[3]);
 //                    logStr.append(GetTimestamp.getNowDate() + "受信品質（RSRP）(-109...-53,2147483647):" + parts[3] + "\n");
-                }
+//                }
             }
 
         } catch (Exception e) {
@@ -399,45 +398,45 @@ public class AlarmReceiver extends BroadcastReceiver {
         // Battery Level
         blevel = batteryStatus.getIntExtra(
                 BatteryManager.EXTRA_LEVEL, -1);
-        Log.d(LogUtility.TAG(this), "電池残量: " + String.valueOf(blevel) + "%");
-        logStr.append(GetTimestamp.getNowDate() + "電池残量: " + String.valueOf(blevel) + "%" + "\n");
+        Log.d(LogUtility.TAG(this), "電池残量" + Const.CSV_BREAK + blevel + "%");
+        logStr.append(GetTimestamp.getNowDate() + "電池残量" + Const.CSV_BREAK + blevel + ",%" + "\n");
 
 
         // Battery Health
         int bh = batteryStatus.getIntExtra(
                 BatteryManager.EXTRA_HEALTH, -1);
-        Log.d(LogUtility.TAG(this), "バッテリー状態: " + batteryHealth(bh));
-        logStr.append(GetTimestamp.getNowDate() + "バッテリー状態: " + batteryHealth(bh) + "\n");
+        Log.d(LogUtility.TAG(this), "バッテリー状態" + Const.CSV_BREAK + batteryHealth(bh));
+        logStr.append(GetTimestamp.getNowDate() + "バッテリー状態" + Const.CSV_BREAK + batteryHealth(bh) + "\n");
 
         // Battery plugged
         int bpl = batteryStatus.getIntExtra(
                 BatteryManager.EXTRA_PLUGGED, -1);
-        Log.d(LogUtility.TAG(this), "電源接続状態: " + batteryPluggCheck(bpl));
-        logStr.append(GetTimestamp.getNowDate() + "電源接続状態: " + batteryPluggCheck(bpl) + "\n");
+        Log.d(LogUtility.TAG(this), "電源接続状態" + Const.CSV_BREAK + batteryPluggCheck(bpl));
+        logStr.append(GetTimestamp.getNowDate() + "電源接続状態" + Const.CSV_BREAK + batteryPluggCheck(bpl) + "\n");
 
         // Battery status
         int bst = batteryStatus.getIntExtra(
                 BatteryManager.EXTRA_STATUS, -1);
-        Log.d(LogUtility.TAG(this), "充電状態: " + status(bst));
-        logStr.append(GetTimestamp.getNowDate() + "充電状態: " + status(bst) + "\n");
+        Log.d(LogUtility.TAG(this), "充電状態" + Const.CSV_BREAK + status(bst));
+        logStr.append(GetTimestamp.getNowDate() + "充電状態" + Const.CSV_BREAK + status(bst) + "\n");
 
         // Battery technology
         String bte = batteryStatus.getStringExtra(
                 BatteryManager.EXTRA_TECHNOLOGY);
-        Log.d(LogUtility.TAG(this), "電池の種類: " + bte);
-        logStr.append(GetTimestamp.getNowDate() + "電池の種類: " + bte + "\n");
+        Log.d(LogUtility.TAG(this), "電池の種類" + Const.CSV_BREAK + bte);
+        logStr.append(GetTimestamp.getNowDate() + "電池の種類" + Const.CSV_BREAK + bte + "\n");
 
         // temperature
         int btp = batteryStatus.getIntExtra(
                 BatteryManager.EXTRA_TEMPERATURE, -1);
-        Log.d(LogUtility.TAG(this), "バッテリー温度: " + String.valueOf((float) btp / 10));
-        logStr.append(GetTimestamp.getNowDate() + "バッテリー温度: " + String.valueOf((float) btp / 10) + "\n");
+        Log.d(LogUtility.TAG(this), "バッテリー温度" + Const.CSV_BREAK + (float) btp / 10);
+        logStr.append(GetTimestamp.getNowDate() + "バッテリー温度 " + Const.CSV_BREAK + (float) btp / 10 + "\n");
 
         // Voltage
         int bv = batteryStatus.getIntExtra(
                 BatteryManager.EXTRA_VOLTAGE, -1);
-        Log.d(LogUtility.TAG(this), "電圧: " + String.valueOf((float) bv / 1000));
-        logStr.append(GetTimestamp.getNowDate() + "電圧: " + String.valueOf((float) bv / 1000) + "\n");
+        Log.d(LogUtility.TAG(this), "電圧" + Const.CSV_BREAK + (float) bv / 1000);
+        logStr.append(GetTimestamp.getNowDate() + "電圧" + Const.CSV_BREAK + (float) bv / 1000 + "\n");
 
     }
 
