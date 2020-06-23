@@ -2,6 +2,7 @@ package com.technomedialab.battelysurvey;
 
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -17,7 +18,12 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
     private OkHttpClient client;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    //String json = "{\"channel\":\"%23android_test\",\"text\":\"bot test\"}";
+    public String stoken;
+
+    public OkHttpPost(String token) {
+        Log.d("トークン",token);
+        stoken = token;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -29,13 +35,15 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
             client = new OkHttpClient();
         }
 
+        MainApplication mainApp = new MainApplication();
+
         //URLをセット
         String url = "https://slack.com/api/chat.postMessage";
         //RequestBody body = RequestBody.create(JSON, json);
 
         //チャンネルと文章をセット
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
-                .add("token","xoxb-392540951891-1139721507506-GWCkhnBtJooLgFGpEyjbjFhH")
+                .add("token",stoken)
                 .add("channel","#android_test")
                 .add("text", Build.DEVICE + ":電池が " + params + "% です。" );
         RequestBody requestBody = formBodyBuilder.build();

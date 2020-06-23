@@ -1,2 +1,3 @@
+include ':gradle-wrapper'
 include ':app'
 rootProject.name='battely_survey'

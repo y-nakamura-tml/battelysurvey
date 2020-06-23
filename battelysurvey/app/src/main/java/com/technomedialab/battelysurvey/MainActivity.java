@@ -2,6 +2,7 @@ package com.technomedialab.battelysurvey;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,11 +31,20 @@ public class MainActivity extends AppCompatActivity {
     private TextView vertextview;
 
 
+
+    private static final String secretKey = "If you can dream it, you can do it.";// 暗号化/復号キー
+
+    //暗号化文字列を生成する場合
+    private String beginning = "ここに暗号化したいトークンを記述";// 暗号化対象文字列
+    private String encValue;//暗号化文字列
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
+
 
         if (appBarConfiguration == null) {
             appBarConfiguration = new AppBarConfiguration.Builder(
@@ -54,10 +64,9 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
 
 
+
         //スクリーンを常にON
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-
 
         logStr = new StringBuilder();
 
@@ -165,7 +174,51 @@ public class MainActivity extends AppCompatActivity {
         // ログバッファクリア
         logStr.delete(0, logStr.length());
 
+        MainApplication mainApp = (MainApplication)getApplicationContext();
+
+        //トークンを復号化
+        try {
+            CryptUtil cryptUtil = new CryptUtil();
+            //トークンの復号化した文字列
+            String encryptiontoken = "TMElT4zUFsY5RDTNvJYJ2ZBaA99pKLMn7I98VY3qS1l1Wo7eRcBAT+/9Dkv/tL0jjUJlaYo63ljW9b9FdRst5A==";
+            String beginning = cryptUtil.getString(secretKey, encryptiontoken); // 復号
+            //Log.d("復号化",beginning);
+            mainApp.setToken(beginning);
+        } catch (Exception e) {
+            Log.e("復号化エラー", e.getMessage(), e);
+        }
+
     }
+
+
+    //トークンを復号化する際に使用
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        try {
+//            CryptUtil cryptUtil = new CryptUtil();
+//            encValue = cryptUtil.saveString(secretKey, beginning); // 暗号化
+//        } catch (Exception e) {
+//            Log.e("暗号化エラー", e.getMessage(), e);
+//        }
+//    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        try {
+//            CryptUtil cryptUtil = new CryptUtil();
+//            String beginning = cryptUtil.getString(secretKey,encValue); // 復号
+//            Log.d("復号化",beginning);
+//        } catch (Exception e) {
+//            Log.e("復号化エラー", e.getMessage(), e);
+//        }
+//    }
+
+
+
+
+
+
 
     @Override
     public void onDestroy() {

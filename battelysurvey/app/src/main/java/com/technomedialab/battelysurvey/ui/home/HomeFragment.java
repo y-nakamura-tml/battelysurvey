@@ -27,6 +27,7 @@ import com.technomedialab.battelysurvey.LogOutput;
 import com.technomedialab.battelysurvey.LogSave;
 import com.technomedialab.battelysurvey.LogUtility;
 import com.technomedialab.battelysurvey.MainActivity;
+import com.technomedialab.battelysurvey.MainApplication;
 import com.technomedialab.battelysurvey.R;
 
 import java.io.BufferedInputStream;
@@ -210,7 +211,9 @@ public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
             }
         };
 
-        LogOutput postTask = new LogOutput();
+        MainApplication mainApp = (MainApplication)getActivity().getApplicationContext();
+        LogOutput postTask = new LogOutput(mainApp.getToken());
+
 
         final File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         File[] files = path.listFiles(filter);

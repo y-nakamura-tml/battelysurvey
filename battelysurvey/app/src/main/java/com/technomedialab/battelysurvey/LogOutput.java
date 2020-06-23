@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +23,19 @@ public class LogOutput extends AsyncTask<File,String,List> {
 
     private OkHttpClient client;
     private CallBackTask callbacktask;
+    public String stoken;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+    public LogOutput(String token) {
+        Log.d("トークン",token);
+        stoken = token;
+    }
+
+
     @Override
     protected List doInBackground(File... filePath) {
+
 
         List<String> errFileList = new ArrayList<>();
         //引数の値を格納
@@ -50,7 +59,7 @@ public class LogOutput extends AsyncTask<File,String,List> {
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("file", files[i].getName(), RequestBody.create(MediaType.parse("text"), files[i]))
-                    .addFormDataPart("token", "xoxb-392540951891-1139721507506-GWCkhnBtJooLgFGpEyjbjFhH")
+                    .addFormDataPart("token", stoken)
                     .addFormDataPart("channels", "#android_test")
                     .addFormDataPart("filename", files[i].getName())
                     .addFormDataPart("filetype", "text")

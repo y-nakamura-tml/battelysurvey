@@ -30,10 +30,6 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.Context.SENSOR_SERVICE;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 public class AlarmReceiver extends BroadcastReceiver {
 
     private Intent batteryStatus;
@@ -47,7 +43,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     private int blevel;
     private OkHttpPost postTask;
     private int blevelflg;
-    private MainApplication mainApp;
 
 
 
@@ -69,8 +64,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             baInfo(logStr);
         }
 
+
+
+
         //照度の値を取得
         MainApplication mainApp = (MainApplication)context.getApplicationContext();
+
 //
 //        float[] sensorValues = mainApp.getSensorValues();
 //        Log.d(LogUtility.TAG(this), "照度：" + String.valueOf(sensorValues[0]));
@@ -115,9 +114,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         //}
 
 
+
         //Slackに端末名と電池残量を通知
         if(postTask == null) {
-            postTask = new OkHttpPost();
+            postTask = new OkHttpPost(mainApp.getToken());
         }
         blevelflg = mainApp.getBlevelflg();
 
