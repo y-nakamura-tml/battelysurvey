@@ -36,12 +36,12 @@
 
     <TextView
         android:id="@+id/VertextView"
-        android:layout_width="112dp"
-        android:layout_height="26dp"
+        android:layout_width="126dp"
+        android:layout_height="38dp"
         android:layout_marginBottom="56dp"
         android:text="@string/Vertextview"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="299dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!--    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--        xmlns:tools="http://schemas.android.com/tools"-->

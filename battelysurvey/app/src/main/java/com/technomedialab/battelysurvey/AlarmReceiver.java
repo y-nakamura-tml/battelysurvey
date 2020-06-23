@@ -120,35 +120,34 @@ public class AlarmReceiver extends BroadcastReceiver {
             postTask = new OkHttpPost();
         }
         blevelflg = mainApp.getBlevelflg();
-        postTask.execute(String.valueOf("a"));
 
-//        if (mainApp != null) {
-//            //電池残量が80%を超えた場合通知する
-//            if (blevel == 80 && blevelflg != 1) {
-//                mainApp.setBlevelflg(1);
-//                postTask.execute(String.valueOf(blevel));
-//            } else if (blevel == 81 && blevelflg != 2) {
-//                mainApp.setBlevelflg(2);
-//                postTask.execute(String.valueOf(blevel));
-//            } else if (blevel == 82 && blevelflg != 3) {
-//                mainApp.setBlevelflg(3);
-//                postTask.execute(String.valueOf(blevel));
-//            } else if (blevel == 83 && blevelflg != 4) {
-//                mainApp.setBlevelflg(4);
-//                postTask.execute(String.valueOf(blevel));
-//            } else if (blevel == 90 && blevelflg != 5) {
-//                mainApp.setBlevelflg(5);
-//                postTask.execute(String.valueOf(blevel));
-//            } else if (blevel == 100 && blevelflg != 6) {
-//                mainApp.setBlevelflg(6);
-//                postTask.execute(String.valueOf(blevel));
-////            blevelflg = 6;
-////            postTask.execute(String.valueOf(blevel));
-//            } else if (blevel <= 79) {
-//                mainApp.setBlevelflg(0);
-//            } else {
-//            }
-//        }
+        if (mainApp != null) {
+            //電池残量が80%を超えた場合通知する
+            if (blevel == 80 && blevelflg != 1) {
+                mainApp.setBlevelflg(1);
+                postTask.execute(String.valueOf(blevel));
+            } else if (blevel == 81 && blevelflg != 2) {
+                mainApp.setBlevelflg(2);
+                postTask.execute(String.valueOf(blevel));
+            } else if (blevel == 82 && blevelflg != 3) {
+                mainApp.setBlevelflg(3);
+                postTask.execute(String.valueOf(blevel));
+            } else if (blevel == 83 && blevelflg != 4) {
+                mainApp.setBlevelflg(4);
+                postTask.execute(String.valueOf(blevel));
+            } else if (blevel == 90 && blevelflg != 5) {
+                mainApp.setBlevelflg(5);
+                postTask.execute(String.valueOf(blevel));
+            } else if (blevel == 100 && blevelflg != 6) {
+                mainApp.setBlevelflg(6);
+                postTask.execute(String.valueOf(blevel));
+//            blevelflg = 6;
+//            postTask.execute(String.valueOf(blevel));
+            } else if (blevel <= 79) {
+                mainApp.setBlevelflg(0);
+            } else {
+            }
+        }
 
         if (wManager == null) {
             wManager = ( WifiManager ) context.getSystemService(context.WIFI_SERVICE);

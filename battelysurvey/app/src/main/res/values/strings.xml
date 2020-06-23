@@ -4,4 +4,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="Vertextview">TextView</string>
+    <string name="l_interval">測定間隔：</string>
+    <string name="l_seve">保存</string>
+    <string name="l_delete">ログ削除</string>
+    <string name="l_logOutput">ログ送信</string>
 </resources>
