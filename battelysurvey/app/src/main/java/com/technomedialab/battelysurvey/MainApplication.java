@@ -37,7 +37,7 @@ public class MainApplication extends Application {
     }
     public void setToken(String values) {
         token = values;
-        Log.d("トークンセット",token);
+//        Log.d("トークンセット",token);
     }
 
 

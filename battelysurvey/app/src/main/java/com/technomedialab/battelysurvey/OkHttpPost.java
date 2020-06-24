@@ -35,8 +35,6 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
             client = new OkHttpClient();
         }
 
-        MainApplication mainApp = new MainApplication();
-
         //URLをセット
         String url = "https://slack.com/api/chat.postMessage";
         //RequestBody body = RequestBody.create(JSON, json);

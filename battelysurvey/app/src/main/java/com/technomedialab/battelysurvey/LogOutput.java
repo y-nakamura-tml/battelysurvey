@@ -28,7 +28,6 @@ public class LogOutput extends AsyncTask<File,String,List> {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public LogOutput(String token) {
-        Log.d("トークン",token);
         stoken = token;
     }
 
