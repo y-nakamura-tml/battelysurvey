@@ -27,13 +27,16 @@ public class BackgroundService extends Service {
         super.onStartCommand(intent, flags, startId);
         Log.d(TAG(this),"onStartCommand");
 
+        MainApplication mainApp = (MainApplication) getApplicationContext();
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(getApplicationContext(), AlarmReceiver.class);
         am.set(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis()+
-                        Const.MIN_INTERVAL,
+//                        Const.MIN_INTERVAL,
+                        mainApp.getMinInterval(),
                 PendingIntent.getBroadcast(getApplicationContext(),0,i,PendingIntent.FLAG_UPDATE_CURRENT));
 
 
