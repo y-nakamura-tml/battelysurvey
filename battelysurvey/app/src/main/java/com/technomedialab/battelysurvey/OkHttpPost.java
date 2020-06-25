@@ -21,7 +21,7 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
     public String stoken;
 
     public OkHttpPost(String token) {
-        Log.d("トークン",token);
+        //Log.d("トークン",token);
         stoken = token;
     }
 
