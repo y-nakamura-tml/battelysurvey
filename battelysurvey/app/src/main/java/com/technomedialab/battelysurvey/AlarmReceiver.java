@@ -64,18 +64,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             baInfo(logStr);
         }
 
+        MainApplication mainApp = (MainApplication) context.getApplicationContext();
 
+        //照度ONの場合、値を取得
+        if (mainApp.getLightSensorFlg()) {
+            float[] sensorValues = mainApp.getSensorValues();
+            Log.d(LogUtility.TAG(this), "照度" + Const.CSV_BREAK + sensorValues[0]);
+            logStr.append(GetTimestamp.getNowDate() + "照度" + Const.CSV_BREAK + sensorValues[0] + "\n");
 
-
-        //照度の値を取得
-        MainApplication mainApp = (MainApplication)context.getApplicationContext();
-
-//
-//        float[] sensorValues = mainApp.getSensorValues();
-//        Log.d(LogUtility.TAG(this), "照度：" + String.valueOf(sensorValues[0]));
-//        logStr.append(GetTimestamp.getNowDate() + "照度：" + String.valueOf(sensorValues[0]) + "\n");
-
-
+        }
 
         //Android8.0以降の端末で通知を送る
         //if (Build.VERSION.SDK_INT >= 26) {

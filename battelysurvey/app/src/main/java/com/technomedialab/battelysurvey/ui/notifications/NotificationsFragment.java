@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.technomedialab.battelysurvey.MainApplication;
 import com.technomedialab.battelysurvey.R;
+import com.technomedialab.battelysurvey.SensorActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +27,8 @@ public class NotificationsFragment extends Fragment {
     private NotificationsViewModel notificationsViewModel;
     private MainApplication mainApp;
     private Spinner pd_interval;
+    private Switch sw_lightSensor;
+    private SensorActivity sa;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -34,6 +38,8 @@ public class NotificationsFragment extends Fragment {
                 ViewModelProviders.of(this).get(NotificationsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
         mainApp = (MainApplication) getActivity().getApplicationContext();
+        sa = (SensorActivity) getActivity();
+
 
         //測定間隔の初期値を取得（ミリ秒⇒秒に変換）
         long sec = TimeUnit.MILLISECONDS.toSeconds(mainApp.getMinInterval());
@@ -45,6 +51,9 @@ public class NotificationsFragment extends Fragment {
         int selectionPosition= ((ArrayAdapter<String>)pd_interval.getAdapter()).getPosition(String.valueOf(sec));
         pd_interval.setSelection(selectionPosition);
 
+        //照度設定スイッチ
+        sw_lightSensor = root.findViewById(R.id.sw_lightSensor);
+        sw_lightSensor.setChecked(mainApp.getLightSensorFlg());
 
 
 //        final TextView textView = root.findViewById(R.id.l_interval);
@@ -63,25 +72,26 @@ public class NotificationsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // 保存ボタン押下時
-        view.findViewById(R.id.b_seve).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.b_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                seveClickEvent(v);
+                saveClickEvent(v);
             }
         });
 
     }
 
-    private void seveClickEvent(View v) {
+    private void saveClickEvent(View v) {
 
         //測定間隔
-        long msec = TimeUnit.SECONDS.toMillis(Long.parseLong(pd_interval.getSelectedItem().toString()));
-        System.out.println("秒⇒ミリ秒:" + pd_interval.getSelectedItem().toString() + " ⇒ " + msec);
+        long mSec = TimeUnit.SECONDS.toMillis(Long.parseLong(pd_interval.getSelectedItem().toString()));
+        mainApp.setMinInterval(mSec);
+
+        //照度設定
+        mainApp.setLightSensorFlg(sw_lightSensor.isChecked());
+        sa.setLightSensor(mainApp.getLightSensorFlg());
 
 
-        System.out.println("getMinInterval（保存前）:" + mainApp.getMinInterval());
-        mainApp.setMinInterval(msec);
-        System.out.println("getMinInterval（保存後）:" + mainApp.getMinInterval());
 
     }
 

@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/b_seve"
+        android:id="@+id/b_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
@@ -41,4 +41,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/l_interval"
         app:layout_constraintTop_toTopOf="@+id/l_interval" />
+
+    <Switch
+        android:id="@+id/sw_lightSensor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/l_lightSensor"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/l_interval"
+        app:layout_constraintTop_toBottomOf="@+id/l_interval" />
 </androidx.constraintlayout.widget.ConstraintLayout>
