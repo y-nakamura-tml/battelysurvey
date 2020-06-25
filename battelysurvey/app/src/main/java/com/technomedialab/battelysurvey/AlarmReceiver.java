@@ -382,20 +382,20 @@ public class AlarmReceiver extends BroadcastReceiver {
                 // 5Gの各電波強度
                 // アイコンレベルはmCsiRsrpで判定　
                 // 範囲[-115 <= -105 <= -95 ]
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[1].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[1].replace("=",Const.CSV_BREAK) + "\n");
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[2].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[2].replace("=",Const.CSV_BREAK) + "\n");
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[3].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[3].replace("=",Const.CSV_BREAK) + "\n");
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[4].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[4].replace("=",Const.CSV_BREAK) + "\n");
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[5].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[5].replace("=",Const.CSV_BREAK) + "\n");
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[6].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[6].replace("=",Const.CSV_BREAK) + "\n");
-                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[7].replace("=",Const.CSV_BREAK));
-                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[7].replace("=",Const.CSV_BREAK) + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[1] + Const.CSV_BREAK + mNrData[3]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[1] + Const.CSV_BREAK + mNrData[3] + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[4] + Const.CSV_BREAK + mNrData[6]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[4] + Const.CSV_BREAK + mNrData[6] + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[7] + Const.CSV_BREAK + mNrData[9]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[7] + Const.CSV_BREAK + mNrData[9] + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[10] + Const.CSV_BREAK + mNrData[12]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[10] + Const.CSV_BREAK + mNrData[12] + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[13] + Const.CSV_BREAK + mNrData[15]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[13] + Const.CSV_BREAK + mNrData[15] + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[16] + Const.CSV_BREAK + mNrData[18]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[16] + Const.CSV_BREAK + mNrData[18] + "\n");
+                Log.d(LogUtility.TAG(this), "mNr:" + mNrData[19] + Const.CSV_BREAK + mNrData[21]);
+                logStr.append(GetTimestamp.getNowDate() + "mNr:" + mNrData[19] + Const.CSV_BREAK + mNrData[21] + "\n");
 
 
 //                Log.d(LogUtility.TAG(this), "OS10" + Const.CSV_BREAK + signalStrength.toString());
