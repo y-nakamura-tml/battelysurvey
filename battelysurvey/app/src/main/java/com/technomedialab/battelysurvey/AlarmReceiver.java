@@ -263,7 +263,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent i = new Intent(context.getApplicationContext(), AlarmReceiver.class);
         am.set(AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis() +
-                        Const.MIN_INTERVAL,
+//                        Const.MIN_INTERVAL,
+                        mainApp.getMinInterval(),
                 PendingIntent.getBroadcast(context.getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT));
 
     }
