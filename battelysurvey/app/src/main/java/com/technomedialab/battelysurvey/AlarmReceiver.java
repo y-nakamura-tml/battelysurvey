@@ -19,6 +19,7 @@ import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.CellInfo;
 import android.telephony.CellSignalStrength;
@@ -245,6 +246,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d(LogUtility.TAG(this), String.format("WiFi RSSI : %d / Level : %d/4", rssi, level));
         logStr.append(GetTimestamp.getNowDate() + String.format("WiFi RSSI" + Const.CSV_BREAK +  "%d ", rssi) + "\n");
         logStr.append(GetTimestamp.getNowDate() + String.format("WiFi Level" + Const.CSV_BREAK + "'" + "%d/4",  level) + "\n");
+
+
+        //Android10で取得可能な端末の熱状態(0:正常 ～ 7:電源OFFが必要）
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            PowerManager pm = ( PowerManager ) context.getSystemService(Context.POWER_SERVICE);
+            int pmanagernum = pm.getCurrentThermalStatus();
+            Log.d(LogUtility.TAG(this), String.valueOf(pmanagernum));
+        }
 
 
         //ログ保存
