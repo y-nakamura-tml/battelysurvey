@@ -58,6 +58,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         //センサマネージャから照度センサーを指定
         lightSensor = manager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
+        //照度センサーのリスナー設定
+        setLightSensor(mainApp.getLightSensorFlg());
+
         //textview = (TextView)findViewById(R.id.textView);
         //textview.setText("照度センサー　＝　");
 
@@ -89,7 +92,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         long currentTimeMillis = System.currentTimeMillis();
 
         Sensor sensor = event.sensor;
@@ -119,22 +121,20 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    //照度センサーのリスナー設定
+    public void setLightSensor (Boolean flg){
+        if (flg) {
+            // リスナー登録
+            manager.registerListener(this,
+                    lightSensor,
+                    SensorManager.SENSOR_DELAY_FASTEST);
 
-        // リスナー設定
-        manager.registerListener (this,
-                lightSensor,
-                SensorManager.SENSOR_DELAY_FASTEST);
-    }
+        }else{
+            // リスナー解除
+            manager.unregisterListener(this,lightSensor);
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+        }
 
-        // リスナー解除
-        manager.unregisterListener(this,lightSensor);
     }
 
 }

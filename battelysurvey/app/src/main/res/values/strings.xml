@@ -8,6 +8,7 @@
     <string name="l_seve">保存</string>
     <string name="l_delete">ログ削除</string>
     <string name="l_logOutput">ログ送信</string>
+    <string name="l_lightSensor">照度設定：</string>
 
     <string-array name="intervalList">
         <item>10</item>
