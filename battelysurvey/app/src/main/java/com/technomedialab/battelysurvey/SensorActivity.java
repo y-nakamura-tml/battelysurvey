@@ -101,24 +101,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         if (mainApp != null) {
             mainApp.setSensorValues(values);
         }
-
-//        // センサー
-//        if(sensor.getType() == Sensor.TYPE_LIGHT){
-//            //Log.d("SENSOR_DATA", "TYPE_LIGHT = " + String.valueOf(values[0]));
-//            //textview.setText("照度センサー　＝　" + String.valueOf(values[0]));
-//            Log.d(LogUtility.TAG(this), "照度：" + String.valueOf(values[0]));
-//            logStr.append(GetTimestamp.getNowDate() + "照度：" + String.valueOf(values[0]) + "\n");
-//
-//            //ログ保存
-//            if (tsl == null) {
-//                tsl = new LogSave();
-//            }
-//            tsl.textsavelog(this, logStr);
-//            // ログバッファクリア
-//            logStr.delete(0, logStr.length());
-//        }
-
-
     }
 
     //照度センサーのリスナー設定

@@ -433,8 +433,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void baInfo(StringBuilder logStr) {
 
         // Battery Level
-        blevel = batteryStatus.getIntExtra(
-                BatteryManager.EXTRA_LEVEL, -1);
+        blevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         Log.d(LogUtility.TAG(this), "電池残量" + Const.CSV_BREAK + blevel + "%");
         logStr.append(GetTimestamp.getNowDate() + "電池残量" + Const.CSV_BREAK + blevel + ",%" + "\n");
 
