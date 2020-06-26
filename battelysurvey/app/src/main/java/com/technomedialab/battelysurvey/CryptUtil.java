@@ -76,7 +76,7 @@ public class CryptUtil {
 
     }
     /**
-     * 文字列取得
+     * 復号化
      *
      * @param key キー
      * @return String キーに紐づいた値(無ければnullを返す)
@@ -98,6 +98,27 @@ public class CryptUtil {
             throw new Exception("復号に失敗しました。");
         }
         return decValue;
+    }
+
+    /**
+     * 暗号化
+     *
+     * @param key キー
+     * @param value 暗号化したい値
+     * @return String 暗号化したキー
+     * @throws Exception 例外
+     */
+    public String setString(String key,String value) throws Exception {
+        String encValue;
+        try {
+            CryptUtil cryptUtil = new CryptUtil();
+            encValue = cryptUtil.saveString(key, value); // 暗号化
+            Log.e("暗号化", encValue);
+        } catch (Exception e) {
+            Log.e("暗号化エラー", e.getMessage(), e);
+            return null;
+        }
+        return encValue;
     }
 
 }

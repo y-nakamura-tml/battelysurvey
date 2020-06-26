@@ -55,7 +55,7 @@ public class MainActivity extends SensorActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         vertextview = (TextView)findViewById(R.id.VertextView);
-        vertextview.setText("Ver." +Const.APP_VERSION +"(照度なし)");
+        vertextview.setText("Ver." +Const.APP_VERSION);
 
         if (intent == null) {
             intent = new Intent(getApplication(), BackgroundService.class);
@@ -87,36 +87,6 @@ public class MainActivity extends SensorActivity {
         }
 
     }
-
-
-    //トークンを復号化する際に使用
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        try {
-//            CryptUtil cryptUtil = new CryptUtil();
-//            encValue = cryptUtil.saveString(secretKey, beginning); // 暗号化
-//        } catch (Exception e) {
-//            Log.e("暗号化エラー", e.getMessage(), e);
-//        }
-//    }
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        try {
-//            CryptUtil cryptUtil = new CryptUtil();
-//            String beginning = cryptUtil.getString(secretKey,encValue); // 復号
-//            Log.d("復号化",beginning);
-//        } catch (Exception e) {
-//            Log.e("復号化エラー", e.getMessage(), e);
-//        }
-//    }
-
-
-
-
-
-
 
     @Override
     public void onDestroy() {

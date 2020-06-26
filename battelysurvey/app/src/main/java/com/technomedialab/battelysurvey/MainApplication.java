@@ -44,11 +44,12 @@ public class MainApplication extends Application {
         blevelflg = values;
     }
 
-    //Slackトークン
+    //Slackトークン取得
     public String getToken() {
         //Log.d("トークンゲット",token);
         return token;
     }
+    //slackトークンセット
     public void setToken(String values) {
         token = values;
 //        Log.d("トークンセット",token);
