@@ -31,6 +31,8 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.List;
 
+import static java.lang.String.valueOf;
+
 public class AlarmReceiver extends BroadcastReceiver {
 
     private LogSave tsl;
@@ -62,10 +64,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         //照度ONの場合、値を取得
         if (mainApp.getLightSensorFlg()) {
-            float[] sensorValues = mainApp.getSensorValues();
-            Log.d(LogUtility.TAG(this), "照度" + Const.CSV_BREAK + sensorValues[0]);
-            logStr.append(GetTimestamp.getNowDate() + "照度" + Const.CSV_BREAK + sensorValues[0] + "\n");
-
+            if(mainApp.getSensorValues() != null) {
+                float[] sensorValues = mainApp.getSensorValues();
+                Log.d(LogUtility.TAG(this), "照度" + Const.CSV_BREAK + sensorValues[0]);
+                logStr.append(GetTimestamp.getNowDate() + "照度" + Const.CSV_BREAK + sensorValues[0] + "\n");
+            }else{
+                Log.d(LogUtility.TAG(this), "赤外線センサー非搭載");
+                logStr.append(GetTimestamp.getNowDate() + "赤外線センサー非搭載\n");
+            }
         }
 
 
@@ -79,22 +85,22 @@ public class AlarmReceiver extends BroadcastReceiver {
             //電池残量が80%を超えた場合通知する
             if (blevel == 80 && blevelflg != 1) {
                 mainApp.setBlevelflg(1);
-                postTask.execute(String.valueOf(blevel));
+                postTask.execute(valueOf(blevel));
             } else if (blevel == 81 && blevelflg != 2) {
                 mainApp.setBlevelflg(2);
-                postTask.execute(String.valueOf(blevel));
+                postTask.execute(valueOf(blevel));
             } else if (blevel == 82 && blevelflg != 3) {
                 mainApp.setBlevelflg(3);
-                postTask.execute(String.valueOf(blevel));
+                postTask.execute(valueOf(blevel));
             } else if (blevel == 83 && blevelflg != 4) {
                 mainApp.setBlevelflg(4);
-                postTask.execute(String.valueOf(blevel));
+                postTask.execute(valueOf(blevel));
             } else if (blevel == 90 && blevelflg != 5) {
                 mainApp.setBlevelflg(5);
-                postTask.execute(String.valueOf(blevel));
+                postTask.execute(valueOf(blevel));
             } else if (blevel == 100 && blevelflg != 6) {
                 mainApp.setBlevelflg(6);
-                postTask.execute(String.valueOf(blevel));
+                postTask.execute(valueOf(blevel));
             } else if (blevel <= 79) {
                 mainApp.setBlevelflg(0);
             } else {
@@ -139,7 +145,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             PowerManager pm = ( PowerManager ) context.getSystemService(Context.POWER_SERVICE);
             int pmanagernum = pm.getCurrentThermalStatus();
-            Log.d(LogUtility.TAG(this), "端末の熱状態" + Const.CSV_BREAK +String.valueOf(pmanagernum));
+            Log.d(LogUtility.TAG(this), "端末の熱状態" + Const.CSV_BREAK + valueOf(pmanagernum));
         }
 
 
