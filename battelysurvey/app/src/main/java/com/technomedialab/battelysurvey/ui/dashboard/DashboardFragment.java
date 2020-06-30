@@ -30,28 +30,60 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private File currentDir;
     private ViewAnimator dirViewStacks;
+    private TextView textFilePash;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         dashboardViewModel =
                 ViewModelProviders.of(this).get(DashboardViewModel.class);
-//        final TextView textView = root.findViewById(R.id.text_dashboard);
-//        dashboardViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
+        textFilePash = root.findViewById(R.id.text_filepach);
+        dashboardViewModel.getText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                textFilePash.setText(s);
+            }
+        });
 
-        getActivity().setContentView(R.layout.fragment_dashboard);
 
-        dirViewStacks = (ViewAnimator) getActivity().findViewById(R.id.dirViewAnimator);
+        dirViewStacks = (ViewAnimator) root.findViewById(R.id.dirViewAnimator);
 
         currentDir = new File("/");
+        dashboardViewModel.setText(currentDir.getPath());
         updateDir(currentDir);
 
         return root;
+    }
+
+    // Viewが生成し終わった時に呼ばれるメソッド
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 保存ボタン押下時
+        view.findViewById(R.id.text_filepach).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("DashboardFragment:onViewCreated onClick Start");
+                if(currentDir.getParent() != null
+                        || dirViewStacks.getChildCount() != 0){
+                    currentDir = currentDir.getParentFile();
+                    dirViewStacks.removeViewAt(dirViewStacks.getChildCount() - 1);
+//                    dashboardViewModel.setText(currentDir.getPath());
+
+                }else{
+                    System.out.println("DashboardFragment:onViewCreated 1");
+//                    super.getActivity().onBackPressed();
+                }
+
+                if(dirViewStacks.getChildCount() == 0){
+                    System.out.println("DashboardFragment:onViewCreated 2");
+//                    super.getActivity().onBackPressed();
+
+                }
+            }
+        });
+
     }
 
     /** フォルダに移動して画面を更新する。 */
@@ -85,6 +117,7 @@ public class DashboardFragment extends Fragment {
                 if(file.isDirectory()){
                     currentDir = file;
                     updateDir(file);
+                    dashboardViewModel.setText(file.getPath());
                     dirViewStacks.showNext();
                 }
             }
