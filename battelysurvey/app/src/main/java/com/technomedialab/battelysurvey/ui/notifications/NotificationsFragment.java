@@ -66,7 +66,7 @@ public class NotificationsFragment extends Fragment {
             //チャンネルスピナーの値をセット
             Spinner spinner = root.findViewById(R.id.spinner);
             ArrayAdapter<String> arrayAdapter
-                    = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
+                    = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line);
             int n = 0;
             for(;n < channel.length;){
                 arrayAdapter.add(channel[n]);
