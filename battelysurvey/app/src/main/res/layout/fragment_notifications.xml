@@ -54,4 +54,23 @@
         app:layout_constraintStart_toStartOf="@+id/l_interval"
         app:layout_constraintTop_toBottomOf="@+id/l_interval" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="チャンネル："
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/sw_lightSensor"
+        app:layout_constraintTop_toBottomOf="@+id/sw_lightSensor" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

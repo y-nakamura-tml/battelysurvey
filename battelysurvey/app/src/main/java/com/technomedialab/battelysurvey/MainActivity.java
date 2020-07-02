@@ -1,5 +1,6 @@
 package com.technomedialab.battelysurvey;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,8 +74,25 @@ public class MainActivity extends SensorActivity {
         AudioManager audioManager = ( AudioManager ) getSystemService(Context.AUDIO_SERVICE);
         LogUtility.TerminalInfoLog(this,this,windowManager,audioManager);
 
-
         MainApplication mainApp = (MainApplication)getApplicationContext();
+
+
+        TextRead tr = new TextRead();
+//        tr.TokenRead(this);
+        String str = tr.channelRead(this);
+        if(str != null) {
+            mainApp.setChannel(str.split("\n"));
+        }
+
+//        if(channelname.length != 0) {
+//            int n = 0;
+//            for (; n < channelname.length; ) {
+//                mainApp.setChannel(channelname[n]);
+//                n++;
+//            }
+//        }
+
+
 
         //トークンを復号化
         try {

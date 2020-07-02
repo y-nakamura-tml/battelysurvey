@@ -10,6 +10,8 @@ public class MainApplication extends Application {
     float[] sensorValues;
     private int blevelflg;
     private String token;
+    private String slacktoken;
+    private String slackchannel[];
     private Long minInterval;
     /** アプリ設定保存用Preferences */
     private SharedPreferences mSettingData;
@@ -19,6 +21,7 @@ public class MainApplication extends Application {
     private static final String MIN_INTERVAL = "MIN_INTERVAL";
     /** 定数 - 保存名：測定間隔　*/
     private static final String LIGHT_SENSOR_FLG = "LIGHT_SENSOR_FLG";
+
 
     @Override
     public void onCreate() {
@@ -54,6 +57,32 @@ public class MainApplication extends Application {
         token = values;
 //        Log.d("トークンセット",token);
     }
+
+
+
+
+//    //Slackトークン取得
+//    public String getSlackToken() {
+//        //Log.d("トークンゲット",token);
+//        return slacktoken;
+//    }
+//    //slackトークンセット
+//    public void setSlackToken(String values) {
+//        slacktoken = values;
+////        Log.d("トークンセット",token);
+//    }
+
+    //Slackチャンネル取得
+    public String[] getChannel() {
+        //Log.d("トークンゲット",token);
+        return slackchannel;
+    }
+    //slackチェンネルセット
+    public void setChannel(String[] values) {
+        slackchannel = values;
+    }
+
+
 
 
     //測定間隔

@@ -152,9 +152,11 @@ public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
                 continue;
                 //ファイルの場合は再帰的に自身を呼び出して削除する
             } else if(files[i].isFile()) {
-                files[i].delete();
-                System.out.println("削除ファイル：" + files[i].toString());
-
+                if(!files[i].getName().equals("channel.txt")) {
+                    Log.d("ファイ名",files[i].getName());
+                    files[i].delete();
+                    System.out.println("削除ファイル：" + files[i].toString());
+                }
             } else if(files[i].isDirectory()) {
                 File[] dirFiles = files[i].listFiles();
 
@@ -172,6 +174,7 @@ public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
                 }else{
                     System.out.println("ディレクトリ削除失敗");
                 }
+
             }
         }
 

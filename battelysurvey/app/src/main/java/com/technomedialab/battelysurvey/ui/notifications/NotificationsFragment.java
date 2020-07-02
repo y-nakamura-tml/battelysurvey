@@ -1,5 +1,6 @@
 package com.technomedialab.battelysurvey.ui.notifications;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.technomedialab.battelysurvey.MainApplication;
 import com.technomedialab.battelysurvey.R;
 import com.technomedialab.battelysurvey.SensorActivity;
+import com.technomedialab.battelysurvey.TextRead;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +31,8 @@ public class NotificationsFragment extends Fragment {
     private Spinner pd_interval;
     private Switch sw_lightSensor;
     private SensorActivity sa;
+    private final int FP = ViewGroup.LayoutParams.FILL_PARENT;
+    private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,14 +59,38 @@ public class NotificationsFragment extends Fragment {
         sw_lightSensor = root.findViewById(R.id.sw_lightSensor);
         sw_lightSensor.setChecked(mainApp.getLightSensorFlg());
 
+        //チャンネルの値を取得
+        MainApplication mainApp = (MainApplication)getActivity().getApplicationContext();
+        String[] channel = mainApp.getChannel();
+        if(channel != null) {
+            //チャンネルスピナーの値をセット
+            Spinner spinner = root.findViewById(R.id.spinner);
+            ArrayAdapter<String> arrayAdapter
+                    = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item);
+            int n = 0;
+            for(;n < channel.length;){
+                arrayAdapter.add(channel[n]);
+                n++;
+            }
+            spinner.setAdapter(arrayAdapter);
+        }else{
+            AlertDialog.Builder alertDelete = new AlertDialog.Builder(getContext());
+            alertDelete
+                    .setTitle("slackの設定ファイルが取得できません。")
+                    .setMessage("ファイルを置きなおしてアプリを再起動してください。\nアプリは続行できます。")
+                    .setPositiveButton("OK",null)
+                    .show();
+        }
 
-//        final TextView textView = root.findViewById(R.id.l_interval);
-//        notificationsViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
+
+
+        final TextView textView = root.findViewById(R.id.l_interval);
+        notificationsViewModel.getText().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                textView.setText(s);
+            }
+        });
         return root;
     }
 

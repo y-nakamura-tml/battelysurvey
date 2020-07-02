@@ -42,6 +42,8 @@ public class OkHttpPost extends AsyncTask<String,String,String> {
         //チャンネルと文章をセット
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("token",stoken)
+                //.add("as_user","true")
+                //.add("username","y-nakamura")
                 .add("channel","#android_test")
                 .add("text", Build.DEVICE + ":電池が " + params + "% です。" );
         RequestBody requestBody = formBodyBuilder.build();
