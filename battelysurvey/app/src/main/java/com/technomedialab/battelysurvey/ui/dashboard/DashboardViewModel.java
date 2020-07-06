@@ -13,11 +13,4 @@ public class DashboardViewModel extends ViewModel {
         mTextFilePath.setValue("This is dashboard fragment");
     }
 
-    public LiveData<String> getText() {
-        return mTextFilePath;
-    }
-    public LiveData<String> setText(String value){
-        mTextFilePath.setValue(value);
-        return mTextFilePath;
-    }
 }
