@@ -3,14 +3,19 @@ package com.technomedialab.battelysurvey.ui.dashboard;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +28,7 @@ import android.widget.ViewAnimator;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -49,6 +55,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -70,7 +77,7 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         String[] channel = mainApp.getChannel();
         if(channel != null) {
             //チャンネルスピナーの値をセット
-            Spinner spinner = root.findViewById(R.id.spinner);
+            Spinner spinner = root.findViewById(R.id.pd_channel);
             ArrayAdapter<String> arrayAdapter
                     = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line);
             int n = 0;
@@ -127,9 +134,10 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         //ファイルストレージを表示
         try {
             Intent intent = null;
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
 //            intent.setType("text/plain");   //TEXT file only
-            intent.setType("*/*");   //TEXT file only
+            intent.setType("*/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             startActivityForResult(Intent.createChooser(intent, "Open a file"), 1000);
@@ -146,15 +154,17 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         super.onActivityResult(requestCode, resultCode, data);
 
         ArrayList listData = new ArrayList<>();
+        String filePath = "";
 
         //選択したファイルパスを取得
         if (resultCode == Activity.RESULT_OK && data != null) {
             ClipData clipData = data.getClipData();
             if(clipData==null){
                 // １つだけ選択
+
                 Uri uri = data.getData();
-                String filePath = uri.getLastPathSegment();
-                filePath=filePath.replace("primary:","/storage/emulated/0/");
+                filePath = getPath(uri);
+
                 listData.add(filePath);
 
             }else {
@@ -162,10 +172,9 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     Uri uri = clipData.getItemAt(i).getUri();
 
-                    String filePath = uri.getLastPathSegment();
-                    filePath=filePath.replace("primary:","/storage/emulated/0/");
-                    listData.add(filePath);
 
+                    filePath = getPath(uri);
+                    listData.add(filePath);
 
                 }
             }
@@ -348,6 +357,52 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         }
         return outputFile;
 
+    }
+
+
+    public String getPath(Uri uri) {
+// Will return "image:x*"
+        String wholeID = DocumentsContract.getDocumentId(uri);
+
+// Split at colon, use second item in the array
+        String id ="";
+        Uri uris;
+        if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+            //ダウンロードを選択時
+            id = wholeID;
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                //TODO:うまくとれない
+//              uris = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
+//              uris = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                uris = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            }else{
+                uris = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            }
+        }else{
+            id = wholeID.split(":")[1];
+            uris = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
+        }
+//        String[] column = { MediaStore.Images.Media.DATA };
+        String[] column = { MediaStore.Files.FileColumns.DATA };
+
+// where id is equal to
+//        String sel = MediaStore.Images.Media._ID + "=?";
+        String sel = MediaStore.Files.FileColumns._ID + "=?";
+
+        Cursor cursor = getActivity().getContentResolver().
+                query(uris,
+                        column, sel, new String[]{ id }, null);
+
+        String filePath = "";
+
+        int columnIndex = cursor.getColumnIndex(column[0]);
+
+        if (cursor.moveToFirst()) {
+            filePath = cursor.getString(columnIndex);
+        }
+        cursor.close();
+        return filePath;
     }
 
 }
