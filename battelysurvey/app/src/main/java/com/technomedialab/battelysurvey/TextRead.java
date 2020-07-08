@@ -1,6 +1,7 @@
 package com.technomedialab.battelysurvey;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -44,9 +45,17 @@ public class TextRead {
 
     public String channelRead(Context context) {
 
-        File tpath = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File tpath;
+
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            tpath = Environment.getExternalStorageDirectory();
+//
+//        }else{
+//            tpath = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+//        }
+
         //ファイル名
-        String testfile = "channel.txt";
+        String testfile = "/Documents/channel.txt";
 
         tfile = new File(tpath, testfile);
 
