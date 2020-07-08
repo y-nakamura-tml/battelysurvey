@@ -7,7 +7,10 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +19,7 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +39,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.technomedialab.battelysurvey.ExplorerItem;
 import com.technomedialab.battelysurvey.ExplorerListArrayAdapter;
+import com.technomedialab.battelysurvey.KeyValuePairAdapter;
 import com.technomedialab.battelysurvey.LogOutput;
 import com.technomedialab.battelysurvey.MainApplication;
 import com.technomedialab.battelysurvey.R;
@@ -64,7 +69,8 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
     private DashboardViewModel dashboardViewModel;
     private MainApplication mainApp;
     private ListView listView;
-
+    private Spinner spinner;
+    private KeyValuePairAdapter mSortSpinnerAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -77,15 +83,34 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         String[] channel = mainApp.getChannel();
         if(channel != null) {
             //チャンネルスピナーの値をセット
-            Spinner spinner = root.findViewById(R.id.pd_channel);
-            ArrayAdapter<String> arrayAdapter
-                    = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line);
-            int n = 0;
-            for(;n < channel.length;){
-                arrayAdapter.add(channel[n]);
-                n++;
+             spinner = root.findViewById(R.id.pd_channel);
+//            ArrayAdapter<String[]> arrayAdapter
+//                    = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
+//
+//            int n = 0;
+//            for(;n < channel.length;){
+//                String[] channelData = channel[n].split(",");
+//                arrayAdapter.add(channelData);
+//                n++;
+//            }
+//            spinner.setAdapter(arrayAdapter);
+            //ファイルからプルダウンに表示する値をセット
+            ArrayList<Pair<String, String>> sortItemList = new ArrayList<Pair<String, String>>();
+            for (int i = 0; i < channel.length; i++) {
+                //カンマ区切りで分割（チャンネル名，トークンID）
+                String[] channelData = channel[i].split(",");
+                //分割した値をプルダウンリストにセット
+                sortItemList.add(new Pair<String, String>(channelData[0], channelData[1]));
+
             }
-            spinner.setAdapter(arrayAdapter);
+
+            // スピナーにアダプターを設定
+            mSortSpinnerAdapter = new KeyValuePairAdapter(getContext(), android.R.layout.simple_dropdown_item_1line,
+                    sortItemList);
+            mSortSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(mSortSpinnerAdapter);
+
+
         }else{
             AlertDialog.Builder alertDelete = new AlertDialog.Builder(getContext());
             alertDelete
@@ -135,8 +160,6 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         try {
             Intent intent = null;
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-//            intent.setType("text/plain");   //TEXT file only
             intent.setType("*/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -163,7 +186,20 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
                 // １つだけ選択
 
                 Uri uri = data.getData();
-                filePath = getPath(uri);
+                //ストレージを選択時
+                if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
+                    //ファイルパスを取得
+                    filePath = uri.getLastPathSegment().replace("primary:", "/");
+                    //内部ストレージの絶対パスを取得
+                    File path = Environment.getExternalStorageDirectory();
+                    //ファイルパスに内部ストレージパスを結合
+                    filePath = path.getPath() + filePath;
+                }else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                    //TODO:ダウンロードからは取得できないようにする
+
+                }else{
+                    filePath = getPath(uri);
+                }
 
                 listData.add(filePath);
 
@@ -171,9 +207,17 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
                 // 複数選択
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     Uri uri = clipData.getItemAt(i).getUri();
-
-
-                    filePath = getPath(uri);
+                    //ストレージを選択時
+                    if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
+                        //ファイルパスを取得
+                        filePath = uri.getLastPathSegment().replace("primary:", "/");
+                        //内部ストレージの絶対パスを取得
+                        File path = Environment.getExternalStorageDirectory();
+                        //ファイルパスに内部ストレージパスを結合
+                        filePath = path.getPath() + filePath;
+                    }else{
+                        filePath = getPath(uri);
+                    }
                     listData.add(filePath);
 
                 }
@@ -189,17 +233,22 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
     private void outputClickEvent(View v) {
         AlertDialog.Builder alertOutput = new AlertDialog.Builder(v.getContext());
 
-        if (listView.getCount() == 0){
+        if (listView.getCount() == 0) {
             alertOutput
-                .setTitle("ファイル未選択エラー")
-                .setMessage("ファイルが選択されておりません。")
-                .setPositiveButton("OK", null)
-                .show();
-
+                    .setTitle("ファイル未選択エラー")
+                    .setMessage("ファイルが選択されておりません。")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }else if (spinner == null || spinner.getCount() == 0){
+            alertOutput
+                    .setTitle("チャンネル未選択エラー")
+                    .setMessage("チャンネルが選択されておりません。")
+                    .setPositiveButton("OK", null)
+                    .show();
         }else{
             alertOutput
-                .setTitle("ログ送信")
-                .setMessage("ログファイルをSlackに送信しますか？")
+                .setTitle("ファイル送信")
+                .setMessage("ファイルをSlackに送信しますか？")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -234,8 +283,11 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
 
         final File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         File[] files = path.listFiles(filter);
+        //選択しているプルダウンのトークンを取得
+        Pair<String, String> selectedItem = mSortSpinnerAdapter.getItem(spinner.getSelectedItemPosition());
+        String token = selectedItem.second;
 
-        LogOutput postTask = new LogOutput(mainApp.getToken());
+        LogOutput postTask = new LogOutput(token);
         if(files == null) {
             System.out.println("配下にファイルが存在しない");
         }else{
@@ -279,10 +331,8 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         //日毎にlogファイルを分ける
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         final File outputPath = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-
         String outputFile =  "file_" +  dateFormat.format(date) + ".zip";
         String outputFilepath = outputPath + "/" + outputFile;
-
 
         File[] inputFiles = outputPath.listFiles();
         for (int i=0;i<inputFiles.length;i++){
@@ -291,8 +341,6 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
                 System.out.println( outputFile + ":既存のファイルを削除");
             }
         }
-
-
 
         // ZIP対象フォルダ配下の全ファイルを取得
         List<File> files = new ArrayList<File>();
@@ -336,14 +384,11 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
                 while ((len = is.read(buf)) != -1) {
                     zos.write(buf, 0, len);
                 }
-
                 // 入力ストリームを閉じる
                 is.close();
-
                 // エントリをクローズする
                 zos.closeEntry();
             }
-
             // 出力ストリームを閉じる
             zos.close();
 
@@ -361,40 +406,35 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
 
 
     public String getPath(Uri uri) {
-// Will return "image:x*"
         String wholeID = DocumentsContract.getDocumentId(uri);
-
-// Split at colon, use second item in the array
         String id ="";
         Uri uris;
-        if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+        String filePath = "";
+        //        if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
             //ダウンロードを選択時
-            id = wholeID;
+            //TODO:うまくとれないのでいったん廃止
+//            id = wholeID;
+//
+//            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                id = id.split(":")[1];
+//                uris = ContentUris.withAppendedId(Uri.parse("content://downloads/my_downloads"), Long.valueOf(id));
+//            }else{
+//                uris = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+//            }
+//        }else{
+//            id = wholeID.split(":")[1];
+//            uris = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
+//        }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                //TODO:うまくとれない
-//              uris = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
-//              uris = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                uris = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-            }else{
-                uris = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-            }
-        }else{
-            id = wholeID.split(":")[1];
-            uris = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
-        }
-//        String[] column = { MediaStore.Images.Media.DATA };
+        id = wholeID.split(":")[1];
+        uris = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
         String[] column = { MediaStore.Files.FileColumns.DATA };
-
-// where id is equal to
-//        String sel = MediaStore.Images.Media._ID + "=?";
         String sel = MediaStore.Files.FileColumns._ID + "=?";
-
         Cursor cursor = getActivity().getContentResolver().
                 query(uris,
                         column, sel, new String[]{ id }, null);
 
-        String filePath = "";
+        DatabaseUtils.dumpCursor(cursor);
 
         int columnIndex = cursor.getColumnIndex(column[0]);
 
@@ -402,6 +442,7 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
             filePath = cursor.getString(columnIndex);
         }
         cursor.close();
+
         return filePath;
     }
 

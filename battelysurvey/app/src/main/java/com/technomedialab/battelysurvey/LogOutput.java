@@ -6,6 +6,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,8 +77,23 @@ public class LogOutput extends AsyncTask<File,String,List> {
 
             try {
                 Response response = client.newCall(request).execute();
-                System.out.println("成功");
-            } catch (IOException e) {
+                //TODO:空ファイルを送信しようとすると応答は帰ってくるが送信結果がエラーとなっている
+
+                String jsonStr = response.body().string();
+                JSONObject json = new JSONObject(jsonStr);
+                String status = json.getString("ok");
+
+                if ("true".equals(status)){
+                    System.out.println("成功");
+
+                }else{
+                    errFileList.add(files[i].getName());
+                    System.out.println("失敗");
+
+                }
+
+
+            } catch (IOException | JSONException e) {
                 errFileList.add(files[i].getName());
                 System.out.println("失敗");
                 e.printStackTrace();
