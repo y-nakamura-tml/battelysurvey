@@ -285,9 +285,10 @@ public class DashboardFragment extends Fragment implements LogOutput.CallBackTas
         File[] files = path.listFiles(filter);
         //選択しているプルダウンのトークンを取得
         Pair<String, String> selectedItem = mSortSpinnerAdapter.getItem(spinner.getSelectedItemPosition());
+        String channels = selectedItem.first;
         String token = selectedItem.second;
 
-        LogOutput postTask = new LogOutput(token);
+        LogOutput postTask = new LogOutput(token,channels);
         if(files == null) {
             System.out.println("配下にファイルが存在しない");
         }else{

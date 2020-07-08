@@ -268,7 +268,7 @@ public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
         };
 
         MainApplication mainApp = (MainApplication)getActivity().getApplicationContext();
-        LogOutput postTask = new LogOutput(mainApp.getToken());
+        LogOutput postTask = new LogOutput(mainApp.getToken(),mainApp.getSelectChannel());
 
 
         final File path = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);

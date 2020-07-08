@@ -12,15 +12,19 @@ public class MainApplication extends Application {
     private String token;
     private String slacktoken;
     private String slackchannel[];
-    private Long minInterval;
+    private String selectChannel;
     /** アプリ設定保存用Preferences */
     private SharedPreferences mSettingData;
     /** 定数 - アプリ状態保存用Preferences名 */
     private static final String SETTING_DATA_PREF = "SETTING_DATA";
     /** 定数 - 保存名：測定間隔　*/
     private static final String MIN_INTERVAL = "MIN_INTERVAL";
-    /** 定数 - 保存名：測定間隔　*/
+    /** 定数 - 保存名：照度設定　*/
     private static final String LIGHT_SENSOR_FLG = "LIGHT_SENSOR_FLG";
+    /** 定数 - 保存名：チャンネル　*/
+    private static final String SELECT_CHANNEL = "SELECT_CHANNEL";
+    /** 定数 - 保存名：トークン　*/
+    private static final String SELECT_TPKEN = "SELECT_TPKEN";
 
 
     @Override
@@ -50,16 +54,29 @@ public class MainApplication extends Application {
     //Slackトークン取得
     public String getToken() {
         //Log.d("トークンゲット",token);
-        return token;
+//        return token;
+        return mSettingData.getString(SELECT_TPKEN,"");
     }
     //slackトークンセット
     public void setToken(String values) {
-        token = values;
+//        token = values;
 //        Log.d("トークンセット",token);
+        SharedPreferences.Editor editor = mSettingData.edit();
+        editor.putString(SELECT_TPKEN, values);
+        editor.apply();
     }
 
-
-
+    //選択されたチャンネルを取得
+    public String getSelectChannel() {
+//        return selectChannel;
+        return mSettingData.getString(SELECT_CHANNEL,"");
+    }
+    //選択されたチャンネルをセット
+    public void setSelectChannel(String values) {
+        SharedPreferences.Editor editor = mSettingData.edit();
+        editor.putString(SELECT_CHANNEL, values);
+        editor.apply();
+    }
 
 //    //Slackトークン取得
 //    public String getSlackToken() {
@@ -81,9 +98,6 @@ public class MainApplication extends Application {
     public void setChannel(String[] values) {
         slackchannel = values;
     }
-
-
-
 
     //測定間隔
     public Long getMinInterval() { return mSettingData.getLong(MIN_INTERVAL,Const.DEFAULT_MIN_INTERVAL); }

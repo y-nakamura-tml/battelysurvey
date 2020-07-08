@@ -81,7 +81,18 @@ public class MainActivity extends SensorActivity {
 //        tr.TokenRead(this);
         String str = tr.channelRead(this);
         if(str != null) {
-            mainApp.setChannel(str.split("\n"));
+            //channel.txtの中身を取得
+            String strList[] = str.split("\n");
+            mainApp.setChannel(strList);
+
+            //初期値が空だったら先頭行のトークンとチャンネルを初期値として設定
+            String data[] = strList[0].split(",");
+            if("".equals(mainApp.getSelectChannel())){
+                mainApp.setSelectChannel(data[0]);
+            }
+            if("".equals(mainApp.getToken())) {
+                mainApp.setToken(data[1]);
+            }
         }
 
 //        if(channelname.length != 0) {

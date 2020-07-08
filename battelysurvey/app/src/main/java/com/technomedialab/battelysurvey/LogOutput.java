@@ -28,11 +28,13 @@ public class LogOutput extends AsyncTask<File,String,List> {
     private OkHttpClient client;
     private CallBackTask callbacktask;
     public String stoken;
+    public String schannels;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public LogOutput(String token) {
+    public LogOutput(String token,String channels) {
         stoken = token;
+        schannels = channels;
     }
 
 
@@ -63,7 +65,7 @@ public class LogOutput extends AsyncTask<File,String,List> {
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("file", files[i].getName(), RequestBody.create(MediaType.parse("text"), files[i]))
                     .addFormDataPart("token", stoken)
-                    .addFormDataPart("channels", "#android_test")
+                    .addFormDataPart("channels", schannels)
                     .addFormDataPart("filename", files[i].getName())
                     .addFormDataPart("filetype", "text")
                     .addFormDataPart("title",  files[i].getName())
