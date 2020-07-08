@@ -15,11 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.technomedialab.battelysurvey.FileGeneration;
 import com.technomedialab.battelysurvey.LogOutput;
 import com.technomedialab.battelysurvey.LogSave;
 import com.technomedialab.battelysurvey.LogUtility;
@@ -29,6 +32,7 @@ import com.technomedialab.battelysurvey.R;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +40,8 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,6 +88,14 @@ public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
             }
         });
 
+        // 実行ボタン押下時
+        view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                executionClickEvent(v);
+            }
+        });
+
     }
 
     private void deleteClickEvent(View v) {
@@ -121,6 +135,56 @@ public class HomeFragment extends Fragment implements LogOutput.CallBackTask{
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
+    private void executionClickEvent(View v){
+
+        File file = null;
+
+        EditText editText = getActivity().findViewById(R.id.editTextDate);
+        CharSequence gomistr = editText.getText();
+        int gomisize = Integer.parseInt(String.valueOf(gomistr));
+        ProgressBar progressBar = getActivity().findViewById(R.id.progressbar);
+
+
+        final File path = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        final String testfile = "gomi.txt";
+
+        if (file == null) {
+            file = new File(path, testfile);
+        }
+
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        try {
+            String str = "a";
+            FileOutputStream fileOutputStream = new FileOutputStream(file, true);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, Charset.forName("SJIS"));
+            BufferedWriter bw = new BufferedWriter(outputStreamWriter);
+
+
+
+            // 表示
+            progressBar.setVisibility(android.widget.ProgressBar.VISIBLE);
+            for(int count = 1;count <= gomisize;count++) {
+                bw.write(str);
+                //ファイルに書き込む
+                bw.flush();
+            }
+            // 非表示
+            progressBar.setVisibility(android.widget.ProgressBar.INVISIBLE);
+            //ファイルを閉じる
+            bw.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(LogUtility.TAG(this), "ログの書き込み失敗");
+        }finally {
+
+        }
+
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
 
     //ログ削除処理
     public void LogDelete(Context context){
